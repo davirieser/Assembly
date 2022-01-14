@@ -8,14 +8,14 @@
 
 ; ---------------------------------------------------------------------------- ;
 
-global _start ; The "_start"-Symbol has to be globally declared for the Linker.
+global main ; The "main"-Symbol has to be globally declared for the Linker.
 
 ; ---------------------------------------------------------------------------- ;
 
 section .text
 
 global _start
-    _start:
+    main:
         ; ssize_t write(int fd, const void *buf, size_t count)
         mov rax, WRITE
         mov rdi, STDOUT
