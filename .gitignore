@@ -4,3 +4,4 @@
 !**/*.c
 !Makefile
 !.gitignore
+!*.txt

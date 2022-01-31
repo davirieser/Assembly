@@ -35,9 +35,12 @@ sys: ## Display Syscalls
 # ---------------------------------------------------------------------------- #
 
 %.exe:
-	$(MAKE) -s $(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
+	@ $(MAKE) -s $(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
 				$(patsubst %.c,%.c.o, $(wildcard $*.c))
-	@ echo "Linking Executable: $* from $^"
+	@ echo "Linking Executable: $* from $(patsubst %.asm, %.asm.o,\
+		$(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
+		$(patsubst %.c,%.c.o, $(wildcard $*.c)) \
+	)"
 	@ $(CC) -g $(patsubst %.asm, %.asm.o,\
 		$(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
 		$(patsubst %.c,%.c.o, $(wildcard $*.c)) \
