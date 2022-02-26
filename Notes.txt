@@ -4,3 +4,6 @@ https://www.nasm.us/xdoc/2.15.05/html/nasmdocb.html
 
 NOTE: Calling ASM from C
 https://www.nasm.us/xdoc/2.15.05/html/nasmdo12.html#section-12.3
+
+NOTE: Linux Syscalls
+https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md

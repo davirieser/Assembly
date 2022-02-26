@@ -22,7 +22,7 @@ sys: ## Display Syscalls
 
 %.asm.o: %.asm
 	@ echo "Running NASM: $^"
-	@ $(ASSEMBLER) -f elf64 -g -F dwarf -o $@ $^
+	@ $(ASSEMBLER) -f elf64 -Wall -g -F dwarf -o $@ $^
 
 %.c.o: %.c
 	@ echo "Running GCC: $^"
@@ -34,7 +34,12 @@ sys: ## Display Syscalls
 
 # ---------------------------------------------------------------------------- #
 
+%: ## Helper Rule => Calls Payload (.exe) Rule
+	$(MAKE) -s $*/$*.exe
+
 %.exe:
+	## Actual Payload Rule => Links Executable from ASM and C Code
+	## Has to end with .exe because otherwise it would be recursive
 	@ $(MAKE) -s $(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
 				$(patsubst %.c,%.c.o, $(wildcard $*.c))
 	@ echo "Linking Executable: $* from $(patsubst %.asm, %.asm.o,\
