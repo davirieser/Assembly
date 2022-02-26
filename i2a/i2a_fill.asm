@@ -1,12 +1,12 @@
 
 ; ---------------------------------------------------------------------------- ;
 
-%define WRITE 1
-%define STDOUT 1
-%define EXIT 60
-%define OK 0
+%idefine WRITE 1
+%idefine STDOUT 1
+%idefine EXIT 60
+%idefine OK 0
 
-%define ASCII_NUM_START 48
+%idefine ASCII_NUM_START 48
 
 ; ---------------------------------------------------------------------------- ;
 ;SECTION .TEXT

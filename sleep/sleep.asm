@@ -1,13 +1,13 @@
 
 ; ---------------------------------------------------------------------------- ;
 
-%define WRITE 1
-%define STDOUT 1
-%define EXIT 60
-%define OK 0
+%idefine WRITE 1
+%idefine STDOUT 1
+%idefine EXIT 60
+%idefine OK 0
 
-%define SLEEP 35
-%define NULL 0
+%idefine SLEEP 35
+%idefine NULL 0
 
 ; ---------------------------------------------------------------------------- ;
 
@@ -47,6 +47,7 @@ main:
     mov rdx, msg_len3
     syscall
 
+exit:
     mov rax, EXIT
     mov rdi, OK
     syscall

@@ -7,6 +7,8 @@ ASM_LINKER=ld
 SYSCALL_FILE=/usr/include/asm/unistd_64.h
 VIEWER=less
 
+ASM_INCLUDES=$(wildcard include/*.asm)
+
 # Disable Implicit Rules
 .SUFFIXES:
 
@@ -22,7 +24,7 @@ sys: ## Display Syscalls
 
 %.asm.o: %.asm
 	@ echo "Running NASM: $^"
-	@ $(ASSEMBLER) -f elf64 -Wall -g -F dwarf -o $@ $^
+	@ $(ASSEMBLER) -f elf64 -Wall -gdwarf --include $(ASM_INCLUDES) -o $@ $^
 
 %.c.o: %.c
 	@ echo "Running GCC: $^"
