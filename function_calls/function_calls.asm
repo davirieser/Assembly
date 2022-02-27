@@ -1,13 +1,21 @@
 
 ; ---------------------------------------------------------------------------- ;
 
+; NOTE: Wikipedia Article:
+; https://en.wikipedia.org/wiki/X86_calling_conventions#Historical_background
+
+; ---------------------------------------------------------------------------- ;
+
+; Globally declare this Symbol so the Linker can find it
 global asm_test
 
+; Declare an external Symbol which will be linked to the Function in the C-Code
 extern c_test
 
 ; ---------------------------------------------------------------------------- ;
 
 section .text
+    ; This Function is called from the C-Code
     asm_test:
 
         ; Save Base Pointer (C Convention)
@@ -63,7 +71,6 @@ section .text
     pass:
         ; Call C-Function from Assembly
         ; Arguments are setup the same way
-        ; I don't know if you have to save the Base Pointer RBP or not lul
         mov rax, 0
         mov rdi, 4269
         mov rsi, 42
@@ -74,18 +81,22 @@ section .text
         push 420
         push 69
         call c_test
+        add rsp, 16
 
-        ; Return the RAX returned by the c_test-Function
+        ; Return 420 (= True)
+        mov rax, 420
         jmp return
 
 ; ---------------------------------------------------------------------------- ;
 
     fail:
-        mov rax, 42069
+        ; Return 0 (= False)
+        mov rax, 0
 
     return:
+        ; Restore old call frame (NOTE: See 'leave'-Instruction)
         mov rsp, rbp
-        pop rbp
+        ; pop rbp
         ret
 
 ; ---------------------------------------------------------------------------- ;
