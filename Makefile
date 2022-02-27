@@ -7,7 +7,7 @@ ASM_LINKER=ld
 SYSCALL_FILE=/usr/include/asm/unistd_64.h
 VIEWER=less
 
-ASM_INCLUDES=$(wildcard include/*.asm)
+ASM_INCLUDES=$(foreach file,$(wildcard include/*.asm), --include $(file))
 
 # Disable Implicit Rules
 .SUFFIXES:
@@ -24,7 +24,7 @@ sys: ## Display Syscalls
 
 %.asm.o: %.asm
 	@ echo "Running NASM: $^"
-	@ $(ASSEMBLER) -f elf64 -Wall -gdwarf --include $(ASM_INCLUDES) -o $@ $^
+	@ $(ASSEMBLER) -f elf64 -Wall -gdwarf $(ASM_INCLUDES) -o $@ $^
 
 %.c.o: %.c
 	@ echo "Running GCC: $^"
@@ -37,7 +37,7 @@ sys: ## Display Syscalls
 # ---------------------------------------------------------------------------- #
 
 %: ## Helper Rule => Calls Payload (.exe) Rule
-	$(MAKE) -s $*/$*.exe
+	@ $(MAKE) -s $*/$*.exe
 
 %.exe:
 	## Actual Payload Rule => Links Executable from ASM and C Code

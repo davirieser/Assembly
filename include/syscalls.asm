@@ -1,10 +1,16 @@
 
 ; ---------------------------------------------------------------------------- ;
 
-%comment
+%if 0
 
+--------------------------------------------------------------------------------
 NOTE: Linux Syscalls
 https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md
+--------------------------------------------------------------------------------
+
+--------------------------------------------
+Extract all Syscalls from the Syscall Table:
+--------------------------------------------------------------------------------
 
 let string = "";
 for (let name of document.getElementsByTagName("table")[1].children[1].children) {
@@ -13,7 +19,7 @@ for (let name of document.getElementsByTagName("table")[1].children[1].children)
                 name.children[0].textContent + newline;
 }
 
-%endcomment
+%endif
 
 ; ---------------------------------------------------------------------------- ;
 
