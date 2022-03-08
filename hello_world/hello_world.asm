@@ -6,8 +6,6 @@ global main ; The "main"-Symbol has to be globally declared for the Linker.
 ; ---------------------------------------------------------------------------- ;
 
 section .text
-
-global _start
     main:
         ; ssize_t write(int fd, const void *buf, size_t count)
         mov rax, SYS_WRITE

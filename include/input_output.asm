@@ -24,4 +24,15 @@
     %1_len: equ $ - %1
 %endmacro
 
+%macro DEBUG 1
+section .rodata
+    %%dbg_str: db %1
+    %%dbg_str_len: equ $ - %%dbg_str
+section .text
+    mov rdi, STDOUT
+    mov rsi, %%dbg_str
+    mov rdx, %%dbg_str_len
+    CALL_SYS WRITE
+%endmacro
+
 ; ---------------------------------------------------------------------------- ;

@@ -50,7 +50,7 @@ section .text
         dec r9
         ; Create Ascii-Number from Result
         mov bl, dl
-        add bl, ASCII_NUM_START
+        add bl, ASCII_NUMBER_START
         ; Push Ascii Value into String
         mov byte [r9], bl
         ; Check if Result is zero

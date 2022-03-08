@@ -40,19 +40,20 @@ sys: ## Display Syscalls
 	@ $(MAKE) -s $*/$*.exe
 
 %.exe:
-	## Actual Payload Rule => Links Executable from ASM and C Code
-	## Has to end with .exe because otherwise it would be recursive
+	@ ## Actual Payload Rule => Links Executable from ASM and C Code
+	@ ## Has to end with .exe because otherwise it would be recursive
 	@ $(MAKE) -s $(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
 				$(patsubst %.c,%.c.o, $(wildcard $*.c))
 	@ echo "Linking Executable: $* from $(patsubst %.asm, %.asm.o,\
 		$(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
 		$(patsubst %.c,%.c.o, $(wildcard $*.c)) \
 	)"
-	@ $(CC) -g $(patsubst %.asm, %.asm.o,\
+	@ $(CC) -g -no-pie $(patsubst %.asm, %.asm.o,\
 		$(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
 		$(patsubst %.c,%.c.o, $(wildcard $*.c)) \
 	) -o $*
 	@ echo "Running Executable: $*"
+	@ echo
 	@ ./$*
 	@ echo
 

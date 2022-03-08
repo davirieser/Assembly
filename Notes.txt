@@ -7,3 +7,12 @@ https://www.nasm.us/xdoc/2.15.05/html/nasmdo12.html#section-12.3
 
 NOTE: Linux Syscalls
 https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md
+
+NOTE: Good Tutorial
+https://github.com/mschwartz/assembly-tutorial
+
+NOTE: AMD Instruction Set explained
+https://www.felixcloutier.com/x86/
+
+NOTE: Use objdump for looking at Object Files
+objdump -d -Mintel <your_name_here>.o
