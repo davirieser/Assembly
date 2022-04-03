@@ -4,49 +4,146 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <assert.h>
 
-#define brk my_brk_int
-#define brk_long my_brk_long
+// -------------------------------------------------------------------------- //
 
-extern void * brk(int x);
-extern void * brk_long(long x);
-extern void * get_brk();
+#define NUM_ALLOCS 20
+
+#define POINTER_SIZE "10"
+#define BLOCK_FORMATTER "(%s) : %" POINTER_SIZE "p, .prev: %" POINTER_SIZE "p, .next: %" POINTER_SIZE "p (%5ld Bytes)\n"
+
+// -------------------------------------------------------------------------- //
+
+// #ifdef DEBUG
+    extern void * BRK_END;
+    extern void * BRK_START;
+// #endif
+
+// -------------------------------------------------------------------------- //
+
+void print_headers ();
+bool check_memory_integrity();
+
+// -------------------------------------------------------------------------- //
+
+typedef struct MemoryField {
+    void * next;
+    void * prev;
+    uint8_t state;
+} Memory;
 
 // -------------------------------------------------------------------------- //
 
 int main () {
 
-    printf("Init (for some Reason printf allocates Heap Memory when first called)\n");
+    assert(check_memory_integrity());
 
-    int iLauf = 0;
-    void * brks[10];
+    void ** buffer = malloc(sizeof(void *) * NUM_ALLOCS);
+    if (buffer == NULL) return -1;
 
-    brks[iLauf++] = brk(0);
+    assert(check_memory_integrity());
 
-    // This one will succeed.
-    void * x = brk(0x1234);
+    for (size_t i = 0; i < NUM_ALLOCS; i++)
+        buffer[i] = malloc(sizeof(void *) * i);
 
-    brks[iLauf++] = brk(0);
+    assert(check_memory_integrity());
 
-    // This one fails because the System will not allocate this much memory.
-    void * y = brk_long(0xffffffffffffffff);
+    print_headers();
 
-    brks[iLauf++] = brk(0);
+    for (size_t i = 0; i < NUM_ALLOCS; i++)
+        free(buffer[i]);
 
-    // This one will fail because you cannot call brk() using a negative number.
-    void * u = brk(-1);
+    assert(check_memory_integrity());
 
-    brks[iLauf++] = brk(0);
+    print_headers();
 
-    for (int iLauf2 = 0; iLauf2 < iLauf; iLauf2 ++)
-        printf("C   Heap Base Pointer: %p \n", brks[iLauf2]);
+    for (size_t i = 0; i < NUM_ALLOCS; i++)
+        buffer[i] = malloc(sizeof(void *) * 20);
+
+    assert(check_memory_integrity());
+
+    print_headers();
 
     return 0;
 
 }
 
-void print_test(void * a) {
-    printf("%p\n", a);
+// -------------------------------------------------------------------------- //
+
+void print_headers () {
+    // Get first Block
+    Memory * header = BRK_START - sizeof(Memory);
+    void * mem = BRK_START;
+
+    printf(
+        "First Block " BLOCK_FORMATTER,
+        (header->state ? "U" : "F"), mem, NULL, header->next,
+        (long) ((header->next - mem - sizeof(Memory)) / 8)
+    );
+
+    // Check if only one Block exists
+    if (header->next == NULL) return;
+
+    mem = header->next;
+    header = header->next - sizeof(Memory);
+
+    // Keep looping until no more Blocks remain
+    while (header->next != NULL) {
+        printf(
+            "Block       " BLOCK_FORMATTER,
+            (header->state ? "U" : "F"), mem, header->prev, header->next,
+            (long) ((header->next - mem - sizeof(Memory)) / 8)
+        );
+        // Get next Block
+        mem = header->next;
+        header = header->next - sizeof(Memory);
+    }
+
+    printf(
+        "Last Block  " BLOCK_FORMATTER "\n",
+        (header->state ? "U" : "F"), mem, header->prev, header->next,
+        (long) ((BRK_END - mem - sizeof(Memory)) / 8)
+    );
+
+}
+
+// -------------------------------------------------------------------------- //
+
+bool check_memory_integrity() {
+
+    Memory * header = BRK_START - sizeof(Memory), * prev_block = NULL;
+    bool prev_is_free = !header->state;
+
+    // Check that the first Block has no previous Block
+    if (header->prev != NULL) return false;
+    // Check if there is only one Block
+    if (header->next == NULL) return true;
+
+    prev_block = ((void *) header) + sizeof(Memory);
+    header = header->next - sizeof(Memory);
+
+    // Keep looping until no more Blocks remain
+    while (header->next != NULL) {
+        // Check that the Blocks are linked correctly and
+        // that freed Blocks are merged.
+        if (prev_block != header->prev) return false;
+        if ((!header->state) && prev_is_free) return false;
+
+        // Get next Block
+        prev_block = ((void *) header) + sizeof(Memory);
+        prev_is_free = !header->state;
+        header = header->next - sizeof(Memory);
+    }
+
+    if (prev_block != header->prev) return false;
+    // Check if two free Blocks follow one another
+    if ((!header->state) && prev_is_free) return false;
+
+    return true;
+
 }
 
 // -------------------------------------------------------------------------- //

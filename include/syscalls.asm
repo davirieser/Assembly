@@ -8,7 +8,7 @@ NOTE: Linux Syscalls
 https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md
 --------------------------------------------------------------------------------
 
---------------------------------------------
+--------------------------------------------------------------------------------
 Extract all Syscalls from the Syscall Table:
 --------------------------------------------------------------------------------
 
@@ -367,6 +367,5 @@ CREATE_SYSCALL PKEY_MPROTECT, 329
 CREATE_SYSCALL PKEY_ALLOC, 330
 CREATE_SYSCALL PKEY_FREE, 331
 CREATE_SYSCALL STATX, 332
-
 
 ; ---------------------------------------------------------------------------- ;

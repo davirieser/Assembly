@@ -14,5 +14,8 @@ https://github.com/mschwartz/assembly-tutorial
 NOTE: AMD Instruction Set explained
 https://www.felixcloutier.com/x86/
 
+NOTE: Registers and Argument Passing
+https://www.cs.uaf.edu/2017/fall/cs301/reference/x86_64.html
+
 NOTE: Use objdump for looking at Object Files
 objdump -d -Mintel <your_name_here>.o

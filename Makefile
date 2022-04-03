@@ -4,6 +4,9 @@
 ASSEMBLER=nasm
 ASM_LINKER=ld
 
+CFLAGS=-std=c11 -Wall -Wextra -Werror -O -g -fsanitize=leak
+ASM_FLAGS=
+
 SYSCALL_FILE=/usr/include/asm/unistd_64.h
 VIEWER=less
 
@@ -39,7 +42,7 @@ sys: ## Display Syscalls
 %: ## Helper Rule => Calls Payload (.exe) Rule
 	@ $(MAKE) -s $*/$*.exe
 
-%.exe:
+%.exe: 
 	@ ## Actual Payload Rule => Links Executable from ASM and C Code
 	@ ## Has to end with .exe because otherwise it would be recursive
 	@ $(MAKE) -s $(patsubst %.asm,%.asm.o,$(wildcard $*.asm)) \
